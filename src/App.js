@@ -78,7 +78,7 @@ class App extends Component {
 			<p>*Note: This is a 5 point scale GPA</p>
 		<h1>CGPA CALCULATOR </h1>
 		<h4>Calculate your CGPA below</h4>
-		<p>Keep track of your academic progress and knowing your target</p>
+		<p>Keep track of your academic progress and knowing your target.</p>
 	 <div className="container">
 		 <div>
 			 <table >
