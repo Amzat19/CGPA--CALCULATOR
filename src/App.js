@@ -1,111 +1,60 @@
-import React, {Component} from "react";
+import React, { useState } from "react";
+import { Body } from "./body";
+import { Footer } from "./footer";
+import { Header } from "./header";
 import "./index.css";
-import Select from "./input";
+import {Select} from "./input";
+import { Gpa } from "./Mygpa";
 
-class App extends Component {
-	constructor(props) {
-	  super(props);
-  
-	  this.state = {
-		courses: [{ title:"", grade: 4.0, units: 4 }]
-	  };
-	}
-  
-	handleChange(i, change) {
-	  const courses = this.state.courses.slice();
-	  courses[i] = { ...courses[i], ...change };
-	  this.setState({
-		courses: courses
-	  });
-	}
-  
-	addCourse() {
-	  this.setState({
-		courses: [...this.state.courses, { title:"", grade: 4.0, units: 4 }]
-	  });
-	}
-  
-	render() {
-	  let totalUnit = 0;
-	  let totalGrade = 0;
-  
-	  const courses = this.state.courses.map((course, i) => {
-		totalUnit += course.units;
-		totalGrade += course.grade * course.units;
-		return (
-		  <Select index={i} key={i} handleChange={this.handleChange.bind(this)} />
-		);
-	  });
+const App = () => {
+	const [state, setState] = useState([{title:"", grade: 5, units: 4}]);
 
-  return (
+	// Handles the change of state by changing the state into an array  and tracking the index of each row of input and the selected change.
+	const handleChange = (i, change) => {
+		let courses = state.slice()
+		courses[i] = {...state[i], ...change}
+		setState(courses);
+	}
+
+	// Adds more row of input to the table 
+    const addCourse = () => {
+	  setState([...state , {title:"", grade: 5, units: 4}]);
+		
+	}
+
+	// Calls the totalUnit and totalGrade for the gpa calculation globally for easy referencing in different functions
+	let totalUnit = 0;
+	let totalGrade = 0;
+
+	// Maps the state of the app and returns input and select tags as the corresponding value.
+	const input = () => {
+		//This is another way of doing what u did earlier
+		//Choose the one u like :)
+	  const courses =  state.map((course,i) => {
+		  totalUnit += course.units ;
+		  totalGrade += course.grade * course.units;
+		  
+		  return (
+			  <Select index={i} key={i} handleChange={handleChange}/>
+		  )
+	  })
+	  return courses;
+	}
+
+	// Returns the calculated gpa
+		const gpCalc = () => { 
+		return (totalGrade / totalUnit).toFixed(2);
+	}
+	
+
+  return  (
 	<div className="App">
-		<h1>Marks/Score Letter Grade Point (GP)</h1>
-			<p>If your score is in numbers(scores),check the correlating Grade in the table below and apply accordingly </p>
-			<table>
-				<thead>
-					<tr>
-						<th>Score</th>
-						<th>Grade</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>70% and above</td>
-							<td>A</td>
-						</tr>
-						<tr>
-							<td>60 - 69</td>
-							<td>B</td>
-						</tr>
-						<tr>
-							<td>50 - 59</td>
-							<td>C</td>
-						</tr>
-						<tr>
-							<td>45 - 49</td>
-							<td>D</td>
-						</tr>
-						<tr>
-							<td>40 - 44</td>
-							<td>E</td>
-						</tr>
-						<tr>
-							<td>0 - 39</td>
-							<td>F</td>
-						</tr>
-					</tbody>
-			</table>
-			<p>*Note: This is a 5 point scale GPA</p>
-		<h1>CGPA CALCULATOR </h1>
-		<h4>Calculate your CGPA below</h4>
-		<p>Keep track of your academic progress and knowing your target.</p>
-	 <div className="container">
-		 <div>
-			 <table >
-			 <thead>
-				 <tr>
-				 <th>Enter Course title</th>
-				 <th>Enter Grade</th>
-				 <th>Enter Course Credit Units</th>
-				 </tr>
-			 </thead>
-			 <tbody>
-				 {courses}
-			 </tbody>
-		 </table>
-
-		 <button type="submit" onClick={this.addCourse.bind(this)}>Add Course</button>
-		 </div> 
-	 </div>
-	 <h2>Your GPA is </h2>
-	 <h3>{(totalGrade / totalUnit).toFixed(2)}</h3>
-
-	 <footer>
-		 <p>Coded by Amzat</p>
-	 </footer>
+		<Header/>
+		<Body addCourse={addCourse} input={input}/>
+		<Gpa gpCalc={gpCalc}/>
+		<Footer/>
 	</div>
   );
-  }
 };
 
 export default App
